@@ -1,0 +1,87 @@
+# Python Slot Machine
+
+import random  # import random module
+
+
+def spin_row():
+    symbols = ['🍒', '🍉', '🍋', '🔔', '⭐']  # list of possible symbols
+
+    return [random.choice(symbols) for _ in range(3)]
+    # generate 3 random symbols (list comprehension)
+
+
+def print_row(row):
+    print("**************")      # top border
+    print(" | ".join(row))     # print symbols separated by |
+    print("**************")    # bottom border
+
+
+def get_payout(row, bet):
+    if row[0] == row[1] == row[2]:   # check if all 3 symbols match
+        if row[0] == '🍒':
+            return bet * 3
+        elif row[0] == '🍉':
+            return bet * 4
+        elif row[0] == '🍋':
+            return bet * 5
+        elif row[0] == '🔔':
+            return bet * 10
+        elif row[0] == '⭐':
+            return bet * 20
+    return 0  # no match → no payout
+
+
+def main():
+    balance = 100  # starting money
+
+    print("*********************")
+    print("Welcome to the SLOTS")
+    print("Symbols: 🍒 🍉 🍋 🔔 ⭐")
+    print("*********************")
+
+    while balance > 0:  # loop while player still has money
+        print(f"Current balance: ${balance}")
+
+        bet = input("Place your bet amount: ")
+
+        if not bet.isdigit():           # check if input is a number
+            print("Please enter a valid number")
+            continue
+
+        bet = int(bet)
+
+        if bet > balance:              # check if enough money
+            print("Insufficient funds")
+            continue
+
+        if bet <= 0:                  # check valid bet
+            print("Bet must be greater than 0")
+            continue
+
+        balance -= bet                # subtract bet from balance
+
+        row = spin_row()              # spin slot machine
+        print("Spinning...\n")
+        print_row(row)
+
+        payout = get_payout(row, bet)   
+
+        if payout > 0:
+            print(f"You won ${payout}")
+        else:
+            print("Sorry you lost this round")
+
+        balance += payout              # add winnings back
+
+        play_again = input("Do you want to spin again? (Y/N): ").upper()
+
+        if play_again != "Y":         # exit condition
+            break
+
+    print("*********************************************")
+    print(f"Game over! Your final balance is ${balance}")
+    print("*********************************************")
+
+
+if __name__ == '__main__':  # run only if file is executed directly
+    main()
